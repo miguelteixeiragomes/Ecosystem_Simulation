@@ -1,5 +1,6 @@
 #include <omp.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define ROCK   '*'
 #define FOX    'F'
@@ -15,8 +16,13 @@ typedef struct {
 
 
 int main(int argc, char *argv[]){
+	int R = 10, C = 10;
 
-	Eco_element *eco_system = (*Eco_element)malloc(R*C*sizeof(Eco_element));
+	Eco_element *eco_system = malloc(R*C*sizeof(Eco_element));
 
+
+
+
+	free(eco_system);
 	return 0;
 }
