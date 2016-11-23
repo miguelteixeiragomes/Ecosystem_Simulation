@@ -34,10 +34,10 @@ struct Eco_element read_gen0(FILE *file, int R, int C, int N){
     }
   }
 
+  char string[10];
+  int X, Y, index;
+  struct Eco_element new_element;
   for(int I = 0; I < N; I++){
-    char string[10];
-    int X, Y, index;
-    struct Eco_element new_element;
     fscanf(file, "%s %i %i", string, &X, &Y);
     index = X * C + Y;
     printf("%s %d %d index = %d\n", string, X, Y, X*C+Y);
