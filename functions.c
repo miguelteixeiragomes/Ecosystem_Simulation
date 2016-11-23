@@ -36,11 +36,29 @@ struct Eco_element read_gen0(FILE *file, int R, int C, int N){
 
   for(int I = 0; I < N; I++){
     char string[10];
-    int X;
-    int Y;
-    fscanf(file, "%s %d %d", string, &X, &Y);
-    printf("%s %d %d\n", string, X, Y);
+    int X, Y, index;
+    struct Eco_element new_element;
+    fscanf(file, "%s %i %i", string, &X, &Y);
+    index = X * C + Y;
+    printf("%s %d %d index = %d\n", string, X, Y, X*C+Y);
+    // if(string == "ROCK"){
+    //   new_element.type = ROCK;
+    // }
+    // else if(string == "FOX"){
+    //   new_element.type = FOX;
+    // }
+    // else if(string == "RABBIT"){
+    //   new_element.type == RABBIT;
+    // }
+    // else{
+    //   new_element.type = EMPTY;
+    // }
+    // eco_system[index] = new_element;
   }
 
   return *eco_system;
 }
+
+// void print_gen(struct Eco_element eco_system, int R, int C, int N){
+//
+// }
