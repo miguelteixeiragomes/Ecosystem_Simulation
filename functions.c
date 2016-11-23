@@ -1,6 +1,7 @@
-#include "omp.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "omp.h"
 #include "functions.h"
 
 #define ROCK   '*'
@@ -24,41 +25,46 @@ struct ECO_SETTINGS read_settings(FILE *file){
 
 struct Eco_element read_gen0(FILE *file, int R, int C, int N){
   struct Eco_element *eco_system = malloc(R*C*sizeof(struct Eco_element));
+  int idx;
+  struct Eco_element new_element;
 
   for(int I = 0; I < R; I++){
-    for(int J = 0; J < C; C++){
-      int index = I*C + J;
-      struct Eco_element empty_element;
-      empty_element.type = EMPTY;
-      eco_system[index] = empty_element;
+    for(int J = 0; J < C; J++){
+      idx = I*C + J;
+      new_element.type = EMPTY;
+      eco_system[idx] = new_element;
     }
   }
 
   char string[10];
-  int X, Y, index;
-  struct Eco_element new_element;
+  int X, Y;
   for(int I = 0; I < N; I++){
-    fscanf(file, "%s %i %i", string, &X, &Y);
-    index = X * C + Y;
-    printf("%s %d %d index = %d\n", string, X, Y, X*C+Y);
-    // if(string == "ROCK"){
-    //   new_element.type = ROCK;
-    // }
-    // else if(string == "FOX"){
-    //   new_element.type = FOX;
-    // }
-    // else if(string == "RABBIT"){
-    //   new_element.type == RABBIT;
-    // }
-    // else{
-    //   new_element.type = EMPTY;
-    // }
-    // eco_system[index] = new_element;
+    fscanf(file, "%s %d %d", string, &X, &Y);
+    idx = X*C + Y;
+    if(strcmp(string,"ROCK") == 0){
+      new_element.type = ROCK;
+    }
+    else if(strcmp(string,"FOX") == 0){
+      new_element.type = FOX;
+    }
+    else if(strcmp(string,"RABBIT") == 0){
+      new_element.type == RABBIT;
+    }
+    else{
+      new_element.type = EMPTY;
+    }
+    eco_system[idx] = new_element;
   }
-
   return *eco_system;
 }
 
-// void print_gen(struct Eco_element eco_system, int R, int C, int N){
-//
+// void print_gen(struct Eco_element *eco_system, int R, int C, int gen){
+//   int idx;
+//   for(int I = 0; I < R; I++){
+//     for(int J = 0; I < C; J++){
+//       idx = I*C + J;
+//       printf("%s", eco_system[idx].type);
+//     }
+//     printf("\n");
+//   }
 // }

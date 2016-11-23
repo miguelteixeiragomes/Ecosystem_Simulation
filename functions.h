@@ -22,5 +22,6 @@ struct ECO_SETTINGS{
 
 struct ECO_SETTINGS read_settings(FILE *file);
 struct Eco_element read_gen0(FILE *file, int R, int C, int N);
+void print_gen(struct Eco_element *eco_system, int R, int C, int gen);
 
 #endif
