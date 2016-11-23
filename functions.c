@@ -9,8 +9,8 @@
 #define RABBIT 'R'
 #define EMPTY  ' '
 
-struct ECO_SETTINGS read_settings(FILE *file){
-  struct ECO_SETTINGS settings;
+ECO_SETTINGS read_settings(FILE *file){
+  ECO_SETTINGS settings;
 
   fscanf(file, "%d %d %d %d %d %d %d",  &settings.GEN_PROC_RABBITS,
                                         &settings.GEN_PROC_FOXES,
@@ -23,15 +23,15 @@ struct ECO_SETTINGS read_settings(FILE *file){
   return settings;
 }
 
-struct Eco_element read_gen0(FILE *file, int R, int C, int N){
-  struct Eco_element *eco_system = malloc(R*C*sizeof(struct Eco_element));
+Eco_element* read_gen0(FILE *file, int R, int C, int N){
+  Eco_element* eco_system = malloc(R*C*sizeof(Eco_element));
   int idx;
-  struct Eco_element new_element;
+  Eco_element new_element;
 
   for(int I = 0; I < R; I++){
     for(int J = 0; J < C; J++){
       idx = I*C + J;
-      new_element.type = EMPTY;
+      strcpy(new_element.type, " ");
       eco_system[idx] = new_element;
     }
   }
@@ -42,29 +42,40 @@ struct Eco_element read_gen0(FILE *file, int R, int C, int N){
     fscanf(file, "%s %d %d", string, &X, &Y);
     idx = X*C + Y;
     if(strcmp(string,"ROCK") == 0){
-      new_element.type = ROCK;
+      strcpy(new_element.type, "*");
     }
     else if(strcmp(string,"FOX") == 0){
-      new_element.type = FOX;
+      strcpy(new_element.type, "F");
     }
     else if(strcmp(string,"RABBIT") == 0){
-      new_element.type == RABBIT;
+      strcpy(new_element.type, "R");
     }
     else{
-      new_element.type = EMPTY;
+      strcpy(new_element.type, " ");
     }
     eco_system[idx] = new_element;
   }
-  return *eco_system;
+
+  return eco_system;
 }
 
-// void print_gen(struct Eco_element *eco_system, int R, int C, int gen){
-//   int idx;
-//   for(int I = 0; I < R; I++){
-//     for(int J = 0; I < C; J++){
-//       idx = I*C + J;
-//       printf("%s", eco_system[idx].type);
-//     }
-//     printf("\n");
-//   }
-// }
+void print_gen(Eco_element *eco_system, int R, int C, int gen){
+  char bar[R+1];
+  strcpy(bar, "-");
+  for (int I = 0; I < 2*R; I++){
+    strcat(bar, "-");
+  }
+
+  printf("Generation %d\n", gen);
+  printf("%s\n", bar);
+  int idx;
+  for(int I = 0; I < R; I++){
+    printf("|");
+    for(int J = 0; J < C-1; J++){
+      idx = I*C + J;
+      printf("%s ", eco_system[idx].type);
+    }
+    printf("%s|\n", eco_system[idx+1].type);
+  }
+  printf("%s", bar);
+}

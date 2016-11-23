@@ -4,13 +4,13 @@
 #include <stdio.h>
 #include <stlib.h>
 
-struct Eco_element{
-	char type;
+typedef struct{
+	char type[2];
 	int gen_proc;
 	int gen_food;
-};
+}Eco_element;
 
-struct ECO_SETTINGS{
+typedef struct{
 	int GEN_PROC_RABBITS;
 	int GEN_PROC_FOXES;
   int GEN_FOOD_FOXES;
@@ -18,10 +18,10 @@ struct ECO_SETTINGS{
   int R;
   int C;
   int N;
-};
+}ECO_SETTINGS;
 
-struct ECO_SETTINGS read_settings(FILE *file);
-struct Eco_element read_gen0(FILE *file, int R, int C, int N);
-void print_gen(struct Eco_element *eco_system, int R, int C, int gen);
+ECO_SETTINGS read_settings(FILE *file);
+Eco_element* read_gen0(FILE *file, int R, int C, int N);
+void print_gen(Eco_element *eco_system, int R, int C, int gen);
 
 #endif
