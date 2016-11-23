@@ -19,6 +19,17 @@ int main(int argc, char *argv[]){
 
   ECO_SETTINGS settings = read_settings(file);
 
+  printf("GEN_PROC_RABBITS %d\n", settings.GEN_PROC_RABBITS);
+  printf("GEN_PROC_FOXES %d\n", settings.GEN_PROC_FOXES);
+  printf("GEN_FOOD_FOXES %d\n", settings.GEN_FOOD_FOXES);
+  printf("N_GEN %d\n", settings.N_GEN);
+  printf("R %d\n", settings.R);
+  printf("C %d\n", settings.C);
+  printf("N %d\n", settings.N);
+
+  Eco_element *eco_system;
+  eco_system =
+
   fclose(file);
 
 	return 0;

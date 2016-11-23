@@ -21,3 +21,35 @@ ECO_SETTINGS read_settings(FILE *file){
 
   return settings;
 }
+
+Eco_element read_gen0(FILE *file, int R, int C){
+  Eco_element *eco_sytem = malloc(R*C*sizeof(Eco_element));
+
+  for(int I = 0; I < R; I++){
+    for(int J = 0; J < C; C++){
+      int index = I*C + J;
+      char a = "1";
+      Eco_element new_element;
+      switch (a) {
+        case ROCK:
+          new_element.type = ROCK;
+          eco_system[index] = new_element;
+          break;
+        case FOX:
+          new_element.type = ROCK;
+          eco_system[index] = new_element;
+          break;
+        case RABBIT:
+          new_element.type = ROCK;
+          eco_system[index] = new_element;
+          break;
+        default:
+          new_element.type = EMPTY;
+          eco_system[index] = new_element;
+          break;
+      }
+    }
+  }
+
+  return Eco_element;
+}

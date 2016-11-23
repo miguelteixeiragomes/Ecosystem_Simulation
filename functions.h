@@ -10,7 +10,7 @@ typedef struct {
 	int gen_food;
 }Eco_element;
 
-struct ECO_SETTINGS{
+typedef struct {
 	int GEN_PROC_RABBITS;
 	int GEN_PROC_FOXES;
   int GEN_FOOD_FOXES;
@@ -18,8 +18,10 @@ struct ECO_SETTINGS{
   int R;
   int C;
   int N;
-};
+}ECO_SETTINGS;
 
-struct ECO_SETTINGS read_settings(FILE *file);
+ECO_SETTINGS read_settings(FILE *file);
+
+Eco_element read_gen0(FILE *file, int R, int C);
 
 #endif
