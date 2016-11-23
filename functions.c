@@ -28,26 +28,15 @@ Eco_element read_gen0(FILE *file, int R, int C){
   for(int I = 0; I < R; I++){
     for(int J = 0; J < C; C++){
       int index = I*C + J;
-      char a = "1";
-      Eco_element new_element;
-      switch (a) {
-        case ROCK:
-          new_element.type = ROCK;
-          eco_system[index] = new_element;
-          break;
-        case FOX:
-          new_element.type = ROCK;
-          eco_system[index] = new_element;
-          break;
-        case RABBIT:
-          new_element.type = ROCK;
-          eco_system[index] = new_element;
-          break;
-        default:
-          new_element.type = EMPTY;
-          eco_system[index] = new_element;
-          break;
+      Eco_element empty_element;
+      empty_element.type = EMPTY;
+      eco_system[index] = empty_element;
       }
+    }
+    for(int I = 0; I < N; I++){
+      char string[15];
+      int X, Y;
+      fscanf(file, "%s %d %d", &string, &X, &Y);
     }
   }
 
