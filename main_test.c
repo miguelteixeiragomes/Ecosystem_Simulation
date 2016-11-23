@@ -19,6 +19,7 @@ int main(int argc, char *argv[]){
 
   ECO_SETTINGS settings = read_settings(file);
 
+  struct ECO_SETTINGS settings = read_settings(file);
   printf("GEN_PROC_RABBITS %d\n", settings.GEN_PROC_RABBITS);
   printf("GEN_PROC_FOXES %d\n", settings.GEN_PROC_FOXES);
   printf("GEN_FOOD_FOXES %d\n", settings.GEN_FOOD_FOXES);
@@ -27,8 +28,7 @@ int main(int argc, char *argv[]){
   printf("C %d\n", settings.C);
   printf("N %d\n", settings.N);
 
-  Eco_element *eco_system;
-  eco_system =
+  struct Eco_element eco_system = read_gen0(file, settings.R, settings.C, settings.N);
 
   fclose(file);
 

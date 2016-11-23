@@ -4,13 +4,13 @@
 #include <stdio.h>
 #include <stlib.h>
 
-typedef struct {
+struct Eco_element{
 	char type;
 	int gen_proc;
 	int gen_food;
-}Eco_element;
+};
 
-typedef struct {
+struct ECO_SETTINGS{
 	int GEN_PROC_RABBITS;
 	int GEN_PROC_FOXES;
   int GEN_FOOD_FOXES;
@@ -18,10 +18,9 @@ typedef struct {
   int R;
   int C;
   int N;
-}ECO_SETTINGS;
+};
 
-ECO_SETTINGS read_settings(FILE *file);
-
-Eco_element read_gen0(FILE *file, int R, int C);
+struct ECO_SETTINGS read_settings(FILE *file);
+struct Eco_element read_gen0(FILE *file, int R, int C, int N);
 
 #endif
