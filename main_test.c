@@ -19,15 +19,11 @@ int main(int argc, char *argv[]){
   file = fopen(argv[1], "r");
 
   ECO_SETTINGS settings = read_settings(file);
-<<<<<<< 94c1b065e7cb666560baf8de6d4fd40055047124
 
   struct ECO_SETTINGS settings = read_settings(file);
   struct Eco_element eco_system = read_gen0(file, settings.R, settings.C, settings.N);
-  // print_gen(eco_system, settings.R, settings.C, 0);
-=======
   Eco_element *eco_system = read_gen0(file, settings.R, settings.C, settings.N);
   print_gen(eco_system, settings.R, settings.C, 0);
->>>>>>> Input_Output done
 
   fclose(file);
 
