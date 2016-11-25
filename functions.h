@@ -2,7 +2,7 @@
 #define FUNCTIONS_H
 
 #include <stdio.h>
-#include <stlib.h>
+#include <stdlib.h>
 
 typedef struct{
 	char type[2];
