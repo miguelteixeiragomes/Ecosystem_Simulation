@@ -1,19 +1,12 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "functions.h"
 
 #define ROCK   '*'
 #define FOX    'F'
 #define RABBIT 'R'
 #define EMPTY  ' '
-
-
-typedef struct {
-	char type;
-	int gen_proc;
-	int gen_food;
-}Eco_element;
-
 
 int* new_position(int gen, Eco_element* ecosystem, int i, int j, int R, int C) {
 	int direction[4] = { 0, 0, 0, 0 }; // north, east, south, west
@@ -47,7 +40,7 @@ int* new_position(int gen, Eco_element* ecosystem, int i, int j, int R, int C) {
 	}
 
 	int pick = (gen + i + j) % (direction[0] + direction[1] + direction[2] + direction[3]);
-	
+
 	int dir = 0;
 	while (pick > 0) {
 		if (direction[dir] == 1) {
