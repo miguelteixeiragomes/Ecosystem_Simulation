@@ -77,7 +77,7 @@ void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
     }
     printf("%s|\n", eco_system[idx+1].type);
   }
-  printf("%s", bar);
+  printf("%s\n", bar);
 }
 
 POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C) {
@@ -151,7 +151,7 @@ void pusher(int gen, ECO_ELEMENT* ecosystem, int R, int C) {
 		for (j = 0; j < C; j++) {
 			ECO_ELEMENT elem = ecosystem[i*C + j];
 			if (elem.type[0] == RABBIT) {
-				int *pos = new_position(gen, ecosystem, i, j, R, C);
+				POSITION pos = new_position(gen, ecosystem, i, j, R, C);
 
 			}
 		}
