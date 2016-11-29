@@ -1,2 +1,2 @@
 ecosystem: main.c
-	gcc functions.c main_test.c -o ecosystem -fopenmp
+	gcc functions.c main.c -o ecosystem -fopenmp

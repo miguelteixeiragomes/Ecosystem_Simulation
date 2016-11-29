@@ -3,25 +3,34 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 typedef struct{
 	char type[2];
 	int gen_proc;
 	int gen_food;
-}Eco_element;
+}ECO_ELEMENT;
 
 typedef struct{
 	int GEN_PROC_RABBITS;
 	int GEN_PROC_FOXES;
-  int GEN_FOOD_FOXES;
-  int N_GEN;
-  int R;
-  int C;
-  int N;
+	int GEN_FOOD_FOXES;
+	int N_GEN;
+	int R;
+	int C;
+	int N;
 }ECO_SETTINGS;
 
-ECO_SETTINGS read_settings(FILE *file);
-Eco_element* read_gen0(FILE *file, int R, int C, int N);
-void print_gen(Eco_element *eco_system, int R, int C, int gen);
+typedef struct {
+	int x;
+	int y;
+}POSITION;
+
+
+ECO_SETTINGS read_settings(FILE*);
+ECO_ELEMENT* read_gen0(FILE*, int, int, int);
+void print_gen(ECO_ELEMENT*, int, int, int);
+POSITION new_position(int, ECO_ELEMENT*, int, int, int, int)
 
 #endif
