@@ -80,7 +80,7 @@ void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
   printf("%s", bar);
 }
 
-POSITION new_position(int gen, ECO_ELEMENT* ecosystem, int i, int j, int R, int C) {
+POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C) {
 	int direction[4] = { 0, 0, 0, 0 }; // north, east, south, west
 	ECO_ELEMENT elem;
 	int idx;
@@ -120,7 +120,7 @@ POSITION new_position(int gen, ECO_ELEMENT* ecosystem, int i, int j, int R, int 
 			dir++;
 		}
 		else {
-			dir++
+			dir++;
 		}
 	}
 	POSITION pos;

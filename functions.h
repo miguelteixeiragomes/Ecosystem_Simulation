@@ -28,9 +28,9 @@ typedef struct {
 }POSITION;
 
 
-ECO_SETTINGS read_settings(FILE*);
-ECO_ELEMENT* read_gen0(FILE*, int, int, int);
-void print_gen(ECO_ELEMENT*, int, int, int);
-POSITION new_position(int, ECO_ELEMENT*, int, int, int, int)
+ECO_SETTINGS read_settings(FILE *file);
+ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N);
+void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen);
+POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C);
 
 #endif
