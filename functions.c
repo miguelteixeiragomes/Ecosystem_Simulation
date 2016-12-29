@@ -17,6 +17,7 @@ ECO_SETTINGS read_settings(FILE *file){
 										  &settings.C,
 										  &settings.N);
 
+	settings.size = settings.R * settings.R;
 	return settings;
 }
 
@@ -29,6 +30,8 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
     for(int J = 0; J < C; J++){
       idx = I*C + J;
       new_element.type = EMPTY;
+	  new_element.gen_food = 0;
+	  new_element.gen_proc = 0;
       eco_system[idx] = new_element;
     }
   }
@@ -50,14 +53,27 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
     else{
       new_element.type = EMPTY;
     }
+	// All the same at the begining
+	new_element.gen_food = 0;
+	new_element.gen_proc = 0;
     eco_system[idx] = new_element;
   }
 
   return eco_system;
 }
 
+void clear_fauna(ECO_ELEMENT *new_eco, int size) {
+	for (int i = 0; i < size; i++) {
+		if (new_eco[i].type != ROCK) {
+			new_eco[i].type = EMPTY;
+			new_eco[i].gen_proc = 0;
+			new_eco[i].gen_food = 0;
+		}
+	}
+}
+
 void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
-  char bar[R+1];
+  char *bar = malloc((R+1)*sizeof(char));
   strcpy(bar, "-");
   for (int I = 0; I < 2*R; I++){
     strcat(bar, "-");
@@ -152,14 +168,36 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 	}
 }
 
-void pusher(int gen, ECO_ELEMENT* ecosystem, int R, int C) {
+void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS) {
 	int i, j;
+	int current_idx, new_idx;
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
-			ECO_ELEMENT elem = ecosystem[i*C + j];
-			if (elem.type == RABBIT) {
-				POSITION pos = new_position(gen, ecosystem, i, j, R, C);
-
+			current_idx = i*C + j;
+			if (current_eco[current_idx].type == RABBIT) {
+				// Calculate new possible position
+				POSITION pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
+				new_idx = pos.x*C + pos.y;
+				if (new_eco[new_idx].type == EMPTY || (new_eco[new_idx].type == RABBIT && current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc)) {
+					// Move to new position if rules are obeyed
+					new_eco[new_idx] = current_eco[current_idx];
+					if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
+						// Drop a kiddo on the old spot
+						new_eco[current_idx].type = RABBIT;
+						new_eco[current_idx].gen_proc = 0;
+						// Gotta wait for more kiddos
+						new_eco[new_idx].gen_proc = 0;
+					}
+					else {
+						new_eco[new_idx].gen_proc++;
+					}
+				}
+				else {
+					// GET REKT SON
+					printf("chuta um erro\n");
+					// Force segmentation fault
+					printf("%s", 1);
+				}
 			}
 		}
 	}
