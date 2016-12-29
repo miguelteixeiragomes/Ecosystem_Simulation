@@ -77,7 +77,7 @@ void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
   printf("%s\n", bar);
 }
 
-POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C) {
+POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C, int type) {
 	int direction[4] = { 0, 0, 0, 0 }; // north, east, south, west
 	ECO_ELEMENT elem;
 	int idx;
@@ -86,25 +86,25 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 	idx = (i - 1)*C + j;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type == EMPTY)
+		if (elem.type == type)
 			direction[0]++;
 	}
 	idx = i*C + j + 1;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type == EMPTY)
+		if (elem.type == type)
 			direction[1]++;
 	}
 	idx = (i + 1)*C + j;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type == EMPTY)
+		if (elem.type == type)
 			direction[2]++;
 	}
 	idx = i*C + j - 1;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type == EMPTY)
+		if (elem.type == type)
 			direction[3]++;
 	}
 	for (int i = 0; i < 4; i++)printf("%d\n", direction[i]);
