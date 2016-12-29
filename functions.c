@@ -107,14 +107,20 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 		if (elem.type == EMPTY)
 			direction[3]++;
 	}
+	for (int i = 0; i < 4; i++)printf("%d\n", direction[i]);
 
 	int pick = (gen + i + j) % (direction[0] + direction[1] + direction[2] + direction[3]);
-
+	printf("pick = %d\n", pick);
 	int dir = 0;
-	while (pick > 0) {
+	while (dir < 5) {
 		if (direction[dir] == 1) {
-			pick--;
-			dir++;
+			if (pick == 0) {
+				break;
+			}
+			else {
+				pick--;
+				dir++;
+			}
 		}
 		else {
 			dir++;
@@ -138,6 +144,10 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 	case 3:
 		pos.x = i;
 		pos.y = j - 1;
+		return pos;
+	case 4:
+		pos.x = i;
+		pos.y = j;
 		return pos;
 	}
 }

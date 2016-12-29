@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
 
 	fclose(file);
   
-	POSITION pos = new_position(1, eco_system, 0, 2, settings.R, settings.C);
+	POSITION pos = new_position(0, eco_system, 0, 2, settings.R, settings.C);
 	printf("%d %d\n", pos.x, pos.y);
 
 	return 0;
