@@ -4,6 +4,7 @@
 #include "omp.h"
 #include "functions.h"
 
+const char types_in_char[4] = {'*', 'F', 'R', ' '};
 
 ECO_SETTINGS read_settings(FILE *file){
 	ECO_SETTINGS settings;
@@ -69,9 +70,9 @@ void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
     printf("|");
     for(int J = 0; J < C-1; J++){
       idx = I*C + J;
-      printf("%s ", eco_system[idx].type);
+      printf("%c ", types_in_char[eco_system[idx].type]);
     }
-    printf("%s|\n", eco_system[idx+1].type);
+    printf("%c|\n", types_in_char[eco_system[idx+1].type]);
   }
   printf("%s\n", bar);
 }

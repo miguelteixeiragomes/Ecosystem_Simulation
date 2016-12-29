@@ -19,8 +19,7 @@ int main(int argc, char *argv[]){
 	print_gen(eco_system, settings.R, settings.C, 0);
 
 	fclose(file);
-
-
+  
 	POSITION pos = new_position(1, eco_system, 0, 2, settings.R, settings.C);
 	printf("%d %d\n", pos.x, pos.y);
 
