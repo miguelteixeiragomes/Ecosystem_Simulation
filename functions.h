@@ -5,9 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ROCK   0
+#define FOX    1
+#define RABBIT 2
+#define EMPTY  3
 
 typedef struct{
-	char type[2];
+	int type;
 	int gen_proc;
 	int gen_food;
 }ECO_ELEMENT;

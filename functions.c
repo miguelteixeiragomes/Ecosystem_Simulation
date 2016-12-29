@@ -4,10 +4,6 @@
 #include "omp.h"
 #include "functions.h"
 
-#define ROCK   '*'
-#define FOX    'F'
-#define RABBIT 'R'
-#define EMPTY  ' '
 
 ECO_SETTINGS read_settings(FILE *file){
 	ECO_SETTINGS settings;
@@ -31,7 +27,7 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
   for(int I = 0; I < R; I++){
     for(int J = 0; J < C; J++){
       idx = I*C + J;
-      strcpy(new_element.type, " ");
+      new_element.type = EMPTY;
       eco_system[idx] = new_element;
     }
   }
@@ -42,16 +38,16 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
     fscanf(file, "%s %d %d", string, &X, &Y);
     idx = X*C + Y;
     if(strcmp(string,"ROCK") == 0){
-      strcpy(new_element.type, "*");
+      new_element.type = ROCK;
     }
     else if(strcmp(string,"FOX") == 0){
-      strcpy(new_element.type, "F");
+      new_element.type = FOX;
     }
     else if(strcmp(string,"RABBIT") == 0){
-      strcpy(new_element.type, "R");
+      new_element.type = RABBIT;
     }
     else{
-      strcpy(new_element.type, " ");
+      new_element.type = EMPTY;
     }
     eco_system[idx] = new_element;
   }
@@ -89,25 +85,25 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 	idx = (i - 1)*C + j;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type[0] == ' ')
+		if (elem.type == EMPTY)
 			direction[0]++;
 	}
 	idx = i*C + j + 1;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type[0] == ' ')
+		if (elem.type == EMPTY)
 			direction[1]++;
 	}
 	idx = (i + 1)*C + j;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type[0] == ' ')
+		if (elem.type == EMPTY)
 			direction[2]++;
 	}
 	idx = i*C + j - 1;
 	if ((idx > -1) && (idx < size)) {
 		elem = ecosystem[idx];
-		if (elem.type[0] == ' ')
+		if (elem.type == EMPTY)
 			direction[3]++;
 	}
 
@@ -150,7 +146,7 @@ void pusher(int gen, ECO_ELEMENT* ecosystem, int R, int C) {
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
 			ECO_ELEMENT elem = ecosystem[i*C + j];
-			if (elem.type[0] == RABBIT) {
+			if (elem.type == RABBIT) {
 				POSITION pos = new_position(gen, ecosystem, i, j, R, C);
 
 			}

@@ -4,10 +4,6 @@
 #include "functions.h"
 #include <string.h>
 
-#define ROCK   '*'
-#define FOX    'F'
-#define RABBIT 'R'
-#define EMPTY  ' '
 
 int main(int argc, char *argv[]){
 	if (argc < 2) {
