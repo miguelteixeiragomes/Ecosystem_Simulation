@@ -16,20 +16,29 @@ int main(int argc, char *argv[]){
 	file = fopen(argv[1], "r");
 
 	ECO_SETTINGS settings = read_settings(file);
-	ECO_ELEMENT *eco_system = read_gen0(file, settings.R, settings.C, settings.N);
+	ECO_ELEMENT *current_eco = read_gen0(file, settings.R, settings.C, settings.N);
 	fclose(file);
-	print_gen(eco_system, settings.R, settings.C, 0);
 
 	ECO_ELEMENT *new_eco = malloc(settings.size*sizeof(ECO_ELEMENT));
-	memcpy(new_eco, eco_system, settings.size * sizeof(ECO_ELEMENT));
-	clear_fauna(new_eco, settings.size);
+	memcpy(new_eco, current_eco, settings.size * sizeof(ECO_ELEMENT));
+
+	ECO_ELEMENT *aux_eco;
 
 	// Lets get jiggy with it
-	rabbit_pusher(0, eco_system, new_eco, settings.R, settings.C, settings.GEN_PROC_RABBITS);
-	print_gen(new_eco, settings.R, settings.C, 1);
+	int gen;
+	for (gen = 0; gen < settings.N_GEN; gen++) {
+		print_gen(new_eco, settings.R, settings.C, gen);
+		clear_fauna(new_eco, settings.size);
+		rabbit_pusher(gen, current_eco, new_eco, settings.R, settings.C, settings.GEN_PROC_RABBITS);
+		fox_pusher(gen, current_eco, new_eco, settings.R, settings.C, settings.GEN_PROC_FOXES, settings.GEN_FOOD_FOXES);
+		aux_eco = current_eco;
+		current_eco = new_eco;
+		new_eco = aux_eco;
+	}
+	print_gen(new_eco, settings.R, settings.C, gen);
 
 	// Freeeeeeeeeeedom (Mel Gibson)
-	free(eco_system);
+	free(current_eco);
 	free(new_eco);
 	return 0;
 }

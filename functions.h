@@ -45,4 +45,6 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 
 void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS);
 
+void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_FOXES, int GEN_FOOD_FOXES);
+
 #endif

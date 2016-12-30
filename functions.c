@@ -123,10 +123,14 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 		if (elem.type == type)
 			direction[3]++;
 	}
-	for (int i = 0; i < 4; i++)printf("%d\n", direction[i]);
-
-	int pick = (gen + i + j) % (direction[0] + direction[1] + direction[2] + direction[3]);
-	printf("pick = %d\n", pick);
+	POSITION pos;
+	int pick = direction[0] + direction[1] + direction[2] + direction[3];
+	if (pick == 0) {
+		pos.x = i;
+		pos.y = j;
+		return pos;
+	}
+	pick = (gen + i + j) % (direction[0] + direction[1] + direction[2] + direction[3]);
 	int dir = 0;
 	while (dir < 5) {
 		if (direction[dir] == 1) {
@@ -142,8 +146,6 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 			dir++;
 		}
 	}
-	POSITION pos;
-
 	switch (dir) {
 	case 0:
 		pos.x = i - 1;
@@ -197,6 +199,62 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 					printf("chuta um erro\n");
 					// Force segmentation fault
 					printf("%s", 1);
+				}
+			}
+		}
+	}
+}
+
+void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_FOXES, int GEN_FOOD_FOXES) {
+	int i, j;
+	int current_idx, new_idx;
+	for (i = 0; i < R; i++) {
+		for (j = 0; j < C; j++) {
+			current_idx = i*C + j;
+			if (current_eco[current_idx].type == FOX) {
+				if (current_eco[current_idx].gen_food >= GEN_FOOD_FOXES) { // handles the starvation of foxes
+					current_eco[current_idx].type = EMPTY;
+					current_eco[current_idx].gen_food = 0;
+					current_eco[current_idx].gen_proc = 0;
+				}
+
+				else {
+					POSITION pos = new_position(gen, new_eco, i, j, R, C, RABBIT);
+					if (pos.x == i && pos.y == j) {  // selects te next position based on both rabbits and empy spaces
+						pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
+					}
+					new_idx = pos.x*C + pos.y;
+
+					if (current_idx != new_idx) {
+						if (new_eco[new_idx].type == RABBIT) {
+							new_eco[new_idx] = current_eco[current_idx];
+							new_eco[new_idx].gen_food = -1;
+						}
+						else if (new_eco[new_idx].type == EMPTY) {
+							new_eco[new_idx] = current_eco[current_idx];
+						}
+						else if (new_eco[new_idx].type == FOX) {
+							if (current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc) {
+								new_eco[new_idx] = current_eco[current_idx];
+							}
+							else if (current_eco[current_idx].gen_proc == new_eco[new_idx].gen_proc) {
+								if (current_eco[current_idx].gen_food < new_eco[new_idx].gen_food) {
+									new_eco[new_idx] = current_eco[current_idx];
+								}
+							}
+						}
+						if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) { // handles reproduction of the foxes
+							new_eco[current_idx].type = FOX;
+							new_eco[current_idx].gen_proc = 0;
+							new_eco[current_idx].gen_food = 0;
+							new_eco[new_idx].gen_proc = -1;
+						}
+					}
+					else {
+						new_eco[current_idx] = current_eco[current_idx];
+					}
+					new_eco[new_idx].gen_proc++;
+					new_eco[new_idx].gen_food++;
 				}
 			}
 		}
