@@ -162,7 +162,7 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 		pos.y = j;
 		return pos;
 	}
-	pick = (gen + i + j) % (direction[0] + direction[1] + direction[2] + direction[3]);
+	pick = (gen + i + j) % pick;
 	int dir = 0;
 	while (dir < 5) {
 		if (direction[dir] == 1) {
@@ -237,6 +237,14 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 	}
 }
 
+void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int type) {
+	for (int i = 0; i < size; i++) {
+		if (current_eco[i].type == type) {
+			new_eco[i] = current_eco[i];
+		}
+	}
+}
+
 void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_FOXES, int GEN_FOOD_FOXES) {
 	int i, j;
 	int current_idx, new_idx;
@@ -251,18 +259,18 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 				}
 
 				else {
-					POSITION pos = new_position(gen, new_eco, i, j, R, C, RABBIT);
+					POSITION pos = new_position(gen, current_eco, i, j, R, C, RABBIT);
 					if (pos.x == i && pos.y == j) {  // selects te next position based on both rabbits and empy spaces
 						pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
 					}
 					new_idx = pos.x*C + pos.y;
 
 					if (current_idx != new_idx) {
-						if (new_eco[new_idx].type == RABBIT) {
+						if (current_eco[new_idx].type == RABBIT) {
 							new_eco[new_idx] = current_eco[current_idx];
 							new_eco[new_idx].gen_food = -1;
 						}
-						else if (new_eco[new_idx].type == EMPTY) {
+						else if (current_eco[new_idx].type == EMPTY) {
 							new_eco[new_idx] = current_eco[current_idx];
 						}
 						else if (new_eco[new_idx].type == FOX) {
