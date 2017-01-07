@@ -5,6 +5,7 @@
 #include "functions.h"
 
 const char types_in_char[4] = {'*', 'F', 'R', ' '};
+const char types_in_string[4][8] = {"ROCK", "FOX", "RABBIT", "EMPTY"};
 
 ECO_SETTINGS read_settings(FILE *file){
 	ECO_SETTINGS settings;
@@ -75,7 +76,7 @@ void clear_fauna(ECO_ELEMENT *new_eco, int size) {
 void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
   char *bar = malloc((R+1)*sizeof(char));
   strcpy(bar, "-");
-  for (int I = 0; I < 2*R; I++){
+  for (int I = 0; I <= R; I++){
     strcat(bar, "-");
   }
 
@@ -86,11 +87,42 @@ void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
     printf("|");
     for(int J = 0; J < C-1; J++){
       idx = I*C + J;
-      printf("%c ", types_in_char[eco_system[idx].type]);
+      printf("%c", types_in_char[eco_system[idx].type]);
     }
     printf("%c|\n", types_in_char[eco_system[idx+1].type]);
   }
   printf("%s\n", bar);
+}
+
+void save_result(ECO_SETTINGS settings, ECO_ELEMENT* eco) {
+	FILE *f = fopen("output.txt", "w+");
+
+	int i, j, current_idx;
+	int N = 0;
+	for (i = 0; i < settings.size; i++) {
+		if (eco[i].type != EMPTY) {
+			N++;
+		}
+	}
+
+	fprintf(f, "%d %d %d %d %d %d %d\n", settings.GEN_PROC_RABBITS, 
+									settings.GEN_PROC_FOXES, 
+									settings.GEN_FOOD_FOXES,
+									0,
+									settings.R,
+									settings.C,
+									N);
+
+	for (i = 0; i < settings.R; i++) {
+		for (j = 0; j < settings.C; j++) {
+			current_idx = i*settings.C + j;
+			if (eco[current_idx].type != EMPTY) {
+				fprintf(f, "%s %d %d\n", types_in_string[eco[current_idx].type], i, j);
+			}
+		}
+	}
+
+	fclose(f);
 }
 
 POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C, int type) {

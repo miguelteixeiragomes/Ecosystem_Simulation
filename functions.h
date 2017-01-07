@@ -41,6 +41,8 @@ void clear_fauna(ECO_ELEMENT *new_eco, int size);
 
 void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen);
 
+void save_result(ECO_SETTINGS settings, ECO_ELEMENT* eco);
+
 POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C, int type);
 
 void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS);

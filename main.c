@@ -22,20 +22,24 @@ int main(int argc, char *argv[]){
 	ECO_ELEMENT *new_eco = malloc(settings.size*sizeof(ECO_ELEMENT));
 	memcpy(new_eco, current_eco, settings.size * sizeof(ECO_ELEMENT));
 
-	ECO_ELEMENT *aux_eco;
+	ECO_ELEMENT *aux_eco = current_eco;
 
 	// Lets get jiggy with it
 	int gen;
 	for (gen = 0; gen < settings.N_GEN; gen++) {
-		print_gen(new_eco, settings.R, settings.C, gen);
+		print_gen(current_eco, settings.R, settings.C, gen);
 		clear_fauna(new_eco, settings.size);
 		rabbit_pusher(gen, current_eco, new_eco, settings.R, settings.C, settings.GEN_PROC_RABBITS);
+		//print_gen(new_eco, settings.R, settings.C, gen);
 		fox_pusher(gen, current_eco, new_eco, settings.R, settings.C, settings.GEN_PROC_FOXES, settings.GEN_FOOD_FOXES);
+		//print_gen(new_eco, settings.R, settings.C, gen);
 		aux_eco = current_eco;
 		current_eco = new_eco;
 		new_eco = aux_eco;
 	}
-	print_gen(new_eco, settings.R, settings.C, gen);
+	print_gen(current_eco, settings.R, settings.C, gen);
+
+	save_result(settings, current_eco);
 
 	// Freeeeeeeeeeedom (Mel Gibson)
 	free(current_eco);
