@@ -301,6 +301,12 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 							new_eco[current_idx].gen_food = -1;
 							new_eco[new_idx].gen_proc = -1;
 						}
+						// If it doesn't reproduce new spot must be EMPTY 
+						/*else {
+							new_eco[current_idx].type = EMPTY;
+							new_eco[current_idx].gen_proc = 0;
+							new_eco[current_idx].gen_food = 0;
+						}*/
 					}
 					
 					// the fox stays put

@@ -39,7 +39,7 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N);
 
 void clear_fauna(ECO_ELEMENT *new_eco, int size);
 
-void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen);
+void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen, int flag);
 
 void save_result(ECO_SETTINGS settings, ECO_ELEMENT* eco);
 
