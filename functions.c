@@ -223,21 +223,21 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 				POSITION pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
 				new_idx = pos.x*C + pos.y;
 				if (new_eco[new_idx].type == EMPTY || (new_eco[new_idx].type == RABBIT && current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc)) {
-					// Move to new position if rules are obeyed
 					new_eco[new_idx] = current_eco[current_idx];
-					if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
-						// Drop a kiddo on the old spot
-						new_eco[current_idx].type = RABBIT;
-						new_eco[current_idx].gen_proc = -1;
-						// Gotta wait for more kiddos
-						new_eco[new_idx].gen_proc = -1;
-					}
 				}
 				else {
-					// GET REKT SON
-					printf("chuta um erro\n");
-					// Force segmentation fault
-					printf("%s", 1);
+					// Rabbit dies 
+					new_eco[current_idx].type = EMPTY;
+					new_eco[current_idx].gen_food = 0;
+					new_eco[current_idx].gen_proc = 0;
+					continue;
+				}
+
+				// Reproduce
+				if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
+					new_eco[current_idx].type = RABBIT;
+					new_eco[current_idx].gen_proc = -1;
+					new_eco[new_idx].gen_proc = -1;
 				}
 			}
 		}
