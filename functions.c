@@ -18,7 +18,7 @@ ECO_SETTINGS read_settings(FILE *file){
 										  &settings.C,
 										  &settings.N);
 
-	settings.size = settings.R * settings.R;
+	settings.size = settings.R * settings.C;
 	return settings;
 }
 
@@ -87,11 +87,11 @@ void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen){
     printf("|");
     for(int J = 0; J < C-1; J++){
       idx = I*C + J;
-      printf("%c", types_in_char[eco_system[idx].type]);
+      printf("%c%d%d ", types_in_char[eco_system[idx].type], eco_system[idx].gen_proc, eco_system[idx].gen_food);
     }
-    printf("%c|\n", types_in_char[eco_system[idx+1].type]);
+    printf("%c%d%d|\n", types_in_char[eco_system[idx+1].type], eco_system[idx].gen_proc, eco_system[idx].gen_food);
   }
-  printf("%s\n", bar);
+  printf("%s\n\n", bar);
 }
 
 void save_result(ECO_SETTINGS settings, ECO_ELEMENT* eco) {
@@ -218,12 +218,9 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 					if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
 						// Drop a kiddo on the old spot
 						new_eco[current_idx].type = RABBIT;
-						new_eco[current_idx].gen_proc = 0;
+						new_eco[current_idx].gen_proc = -1;
 						// Gotta wait for more kiddos
-						new_eco[new_idx].gen_proc = 0;
-					}
-					else {
-						new_eco[new_idx].gen_proc++;
+						new_eco[new_idx].gen_proc = -1;
 					}
 				}
 				else {
@@ -233,6 +230,11 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 					printf("%s", 1);
 				}
 			}
+		}
+	}
+	for (i = 0; i < R*C; i++) {
+		if (new_eco[i].type == RABBIT) {
+			new_eco[i].gen_proc++;
 		}
 	}
 }
@@ -252,19 +254,22 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 		for (j = 0; j < C; j++) {
 			current_idx = i*C + j;
 			if (current_eco[current_idx].type == FOX) {
-				if (current_eco[current_idx].gen_food >= GEN_FOOD_FOXES) { // handles the starvation of foxes
+				// handles the starvation of foxes
+				if (current_eco[current_idx].gen_food >= GEN_FOOD_FOXES) {
 					current_eco[current_idx].type = EMPTY;
 					current_eco[current_idx].gen_food = 0;
 					current_eco[current_idx].gen_proc = 0;
 				}
 
 				else {
+					// selects te next position based on both rabbits and empy spaces
 					POSITION pos = new_position(gen, current_eco, i, j, R, C, RABBIT);
-					if (pos.x == i && pos.y == j) {  // selects te next position based on both rabbits and empy spaces
+					if (pos.x == i && pos.y == j) {
 						pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
 					}
 					new_idx = pos.x*C + pos.y;
 
+					// if the fox moves
 					if (current_idx != new_idx) {
 						if (current_eco[new_idx].type == RABBIT) {
 							new_eco[new_idx] = current_eco[current_idx];
@@ -283,20 +288,27 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 								}
 							}
 						}
-						if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) { // handles reproduction of the foxes
+						// handles reproduction of the foxes
+						if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) {
 							new_eco[current_idx].type = FOX;
-							new_eco[current_idx].gen_proc = 0;
-							new_eco[current_idx].gen_food = 0;
+							new_eco[current_idx].gen_proc = -1;
+							new_eco[current_idx].gen_food = -1;
 							new_eco[new_idx].gen_proc = -1;
 						}
 					}
+					
+					// the fox stays put
 					else {
 						new_eco[current_idx] = current_eco[current_idx];
 					}
-					new_eco[new_idx].gen_proc++;
-					new_eco[new_idx].gen_food++;
 				}
 			}
+		}
+	}
+	for (i = 0; i < R*C; i++) {
+		if (new_eco[i].type == FOX) {
+			new_eco[i].gen_proc++;
+			new_eco[i].gen_food++;
 		}
 	}
 }
