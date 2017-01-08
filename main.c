@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
 		rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
 
 		transmit_type(array_1, array_2, settings.size, FOX);
-		printf("", ) // estavas aqui!!!
+		printf("array_2 after moving rabbits\n");
 		print_gen(array_2, settings.R, settings.C, gen);
 
 		clear_fauna(array_1, settings.size);
