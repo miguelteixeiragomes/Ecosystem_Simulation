@@ -154,26 +154,27 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 	int idx;
 	int size = R*C;
 
-	idx = (i - 1)*C + j;
-	if ((idx > -1) && (idx < size)) {
+	
+	if (i - 1 > -1 && i - 1 < R && j > -1 && j < C) {
+		idx = (i - 1)*C + j;
 		elem = ecosystem[idx];
 		if (elem.type == type)
 			direction[0]++;
 	}
-	idx = i*C + j + 1;
-	if ((idx > -1) && (idx < size)) {
+	if (i > -1 && i < R && j + 1 > -1 && j + 1 < C) {
+		idx = i*C + j + 1;
 		elem = ecosystem[idx];
 		if (elem.type == type)
 			direction[1]++;
 	}
-	idx = (i + 1)*C + j;
-	if ((idx > -1) && (idx < size)) {
+	if (i + 1 > -1 && i + 1 < R && j > -1 && j < C) {
+		idx = (i + 1)*C + j;
 		elem = ecosystem[idx];
 		if (elem.type == type)
 			direction[2]++;
 	}
-	idx = i*C + j - 1;
-	if ((idx > -1) && (idx < size)) {
+	if (i > -1 && i < R && j - 1 > -1 && j - 1 < C) {
+		idx = i*C + j - 1;
 		elem = ecosystem[idx];
 		if (elem.type == type)
 			direction[3]++;
