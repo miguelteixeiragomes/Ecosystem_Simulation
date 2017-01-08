@@ -42,6 +42,9 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
   for(int I = 0; I < N; I++){
     fscanf(file, "%s %d %d", string, &X, &Y);
     idx = X*C + Y;
+
+	new_element.gen_food = 0;
+	new_element.gen_proc = 0;
     if(strcmp(string,"ROCK") == 0){
       new_element.type = ROCK;
     }
@@ -55,8 +58,6 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
       new_element.type = EMPTY;
     }
 	// All the same at the begining
-	new_element.gen_food = 0;
-	new_element.gen_proc = 0;
     eco_system[idx] = new_element;
   }
 
@@ -245,10 +246,6 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 						new_eco[new_idx] = current_eco[current_idx];
 					}
 					else {
-						// Rabbit dies 
-						/*new_eco[current_idx].type = EMPTY;
-						new_eco[current_idx].gen_food = 0;
-						new_eco[current_idx].gen_proc = 0;*/
 						continue;
 					}
 
@@ -258,6 +255,9 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 						new_eco[current_idx].gen_proc = -1;
 						new_eco[new_idx].gen_proc = -1;
 					}
+				}
+				else {
+					new_eco[new_idx] = current_eco[current_idx];
 				}
 			}
 		}
@@ -279,11 +279,9 @@ void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int
 
 void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_FOXES, int GEN_FOOD_FOXES) {
 	int i, j;
-	int current_idx, new_idx, starved;
+	int current_idx, new_idx;
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
-
-			starved = 0;
 
 			current_idx = i*C + j;
 			if (current_eco[current_idx].type == FOX) {
@@ -297,14 +295,14 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 
 				// if the fox moves
 				if (current_idx != new_idx) {
-					if (current_eco[new_idx].type == RABBIT) {
+					if (new_eco[new_idx].type == RABBIT) {
 						new_eco[new_idx] = current_eco[current_idx];
 						new_eco[new_idx].gen_food = -1;
 					}
-					else if (current_eco[new_idx].type == EMPTY) {
+					else if (new_eco[new_idx].type == EMPTY) {
 						// Foxes only go into empty space if they don't starve
 						if (current_eco[current_idx].gen_food + 1 >= GEN_FOOD_FOXES) {
-							starved = 1;
+							continue;
 						}
 						else {
 							new_eco[new_idx] = current_eco[current_idx];
@@ -318,10 +316,13 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 							if (current_eco[current_idx].gen_food < new_eco[new_idx].gen_food) {
 								new_eco[new_idx] = current_eco[current_idx];
 							}
+							else {
+								continue;
+							}
 						}
 					}
-					// handles reproduction of the foxes -- Foxes that starved can't reproduce
-					if (starved == 0 && current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) {
+					// handles reproduction of the foxes
+					if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) {
 						new_eco[current_idx].type = FOX;
 						new_eco[current_idx].gen_proc = -1;
 						new_eco[current_idx].gen_food = -1;
@@ -331,6 +332,9 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 					
 				// the fox stays put
 				else {
+					if (current_eco[current_idx].gen_food + 1 >= GEN_FOOD_FOXES) {
+						continue;
+					}
 					new_eco[current_idx] = current_eco[current_idx];
 				}
 			}

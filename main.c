@@ -31,8 +31,8 @@ int main(int argc, char *argv[]){
 		rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
 
 		transmit_type(array_1, array_2, settings.size, FOX);
-		/*printf("array_2 after moving rabbits\n");
-		print_gen(array_2, settings.R, settings.C, gen, 1);*/
+		//printf("array_2 after moving rabbits\n");
+		//print_gen(array_2, settings.R, settings.C, gen, 1);
 
 		clear_fauna(array_1, settings.size);
 		transmit_type(array_2, array_1, settings.size, RABBIT);
@@ -41,9 +41,6 @@ int main(int argc, char *argv[]){
 	print_gen(array_1, settings.R, settings.C, gen, 0);
 
 	save_result(settings, array_1);
-
-	/*clear_fauna(array_2, settings.size);
-	POSITION pos = new_position(1, array_2, 3, 4, 5, 5, EMPTY);*/
 
 	// Freeeeeeeeeeedom (Mel Gibson)
 	free(array_1);
