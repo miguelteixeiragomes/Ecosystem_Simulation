@@ -88,12 +88,29 @@ void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen, int flag){
     for(int J = 0; J < C-1; J++){
 		idx = I*C + J;
 		if (flag == 1)
-			printf("%c%d%d ", types_in_char[eco_system[idx].type], eco_system[idx].gen_proc, eco_system[idx].gen_food);
+			if (eco_system[idx].type == EMPTY) {
+				printf("    ");
+			}
+			else if (eco_system[idx].type == ROCK) {
+				printf("*** ");
+			}
+			else {
+				printf("%c%d%d ", types_in_char[eco_system[idx].type], eco_system[idx].gen_proc, eco_system[idx].gen_food);
+			}
 		else
 			printf("%c", types_in_char[eco_system[idx].type]);
     }
-	if (flag == 1)
-		printf("%c%d%d|\n", types_in_char[eco_system[idx+1].type], eco_system[idx+1].gen_proc, eco_system[idx+1].gen_food);
+	if (flag == 1) {
+		if (eco_system[idx + 1].type == EMPTY) {
+			printf("   |\n");
+		}
+		else if (eco_system[idx + 1].type == ROCK) {
+			printf("***|\n");
+		}
+		else {
+			printf("%c%d%d|\n", types_in_char[eco_system[idx + 1].type], eco_system[idx + 1].gen_proc, eco_system[idx + 1].gen_food);
+		}
+	}
 	else
 		printf("%c|\n", types_in_char[eco_system[idx + 1].type]);
   }
@@ -228,9 +245,9 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 					}
 					else {
 						// Rabbit dies 
-						new_eco[current_idx].type = EMPTY;
+						/*new_eco[current_idx].type = EMPTY;
 						new_eco[current_idx].gen_food = 0;
-						new_eco[current_idx].gen_proc = 0;
+						new_eco[current_idx].gen_proc = 0;*/
 						continue;
 					}
 
