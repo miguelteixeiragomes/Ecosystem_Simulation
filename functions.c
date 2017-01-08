@@ -222,22 +222,24 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 				// Calculate new possible position
 				POSITION pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
 				new_idx = pos.x*C + pos.y;
-				if (new_eco[new_idx].type == EMPTY || (new_eco[new_idx].type == RABBIT && current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc)) {
-					new_eco[new_idx] = current_eco[current_idx];
-				}
-				else {
-					// Rabbit dies 
-					new_eco[current_idx].type = EMPTY;
-					new_eco[current_idx].gen_food = 0;
-					new_eco[current_idx].gen_proc = 0;
-					continue;
-				}
+				if (new_idx != current_idx) {
+					if (new_eco[new_idx].type == EMPTY || (new_eco[new_idx].type == RABBIT && current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc)) {
+						new_eco[new_idx] = current_eco[current_idx];
+					}
+					else {
+						// Rabbit dies 
+						new_eco[current_idx].type = EMPTY;
+						new_eco[current_idx].gen_food = 0;
+						new_eco[current_idx].gen_proc = 0;
+						continue;
+					}
 
-				// Reproduce
-				if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
-					new_eco[current_idx].type = RABBIT;
-					new_eco[current_idx].gen_proc = -1;
-					new_eco[new_idx].gen_proc = -1;
+					// Reproduce
+					if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
+						new_eco[current_idx].type = RABBIT;
+						new_eco[current_idx].gen_proc = -1;
+						new_eco[new_idx].gen_proc = -1;
+					}
 				}
 			}
 		}
