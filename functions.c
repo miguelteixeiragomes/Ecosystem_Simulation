@@ -185,26 +185,30 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 		}
 	}
 	switch (dir) {
-	case 0:
-		pos.x = i - 1;
-		pos.y = j;
-		return pos;
-	case 1:
-		pos.x = i;
-		pos.y = j + 1;
-		return pos;
-	case 2:
-		pos.x = i + 1;
-		pos.y = j;
-		return pos;
-	case 3:
-		pos.x = i;
-		pos.y = j - 1;
-		return pos;
-	case 4:
-		pos.x = i;
-		pos.y = j;
-		return pos;
+		case 0:
+			pos.x = i - 1;
+			pos.y = j;
+			return pos;
+		case 1:
+			pos.x = i;
+			pos.y = j + 1;
+			return pos;
+		case 2:
+			pos.x = i + 1;
+			pos.y = j;
+			return pos;
+		case 3:
+			pos.x = i;
+			pos.y = j - 1;
+			return pos;
+		case 4:
+			pos.x = i;
+			pos.y = j;
+			return pos;
+		default:
+			pos.x = 0;
+			pos.y = 0;
+			return pos;
 	}
 }
 
@@ -255,58 +259,59 @@ void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int
 
 void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_FOXES, int GEN_FOOD_FOXES) {
 	int i, j;
-	int current_idx, new_idx;
+	int current_idx, new_idx, starved;
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
+
+			starved = 0;
+
 			current_idx = i*C + j;
 			if (current_eco[current_idx].type == FOX) {
-				// handles the starvation of foxes
-				if (current_eco[current_idx].gen_food >= GEN_FOOD_FOXES) {
-					current_eco[current_idx].type = EMPTY;
-					current_eco[current_idx].gen_food = 0;
-					current_eco[current_idx].gen_proc = 0;
+
+				// selects te next position based on both rabbits and empy spaces
+				POSITION pos = new_position(gen, current_eco, i, j, R, C, RABBIT);
+				if (pos.x == i && pos.y == j) {
+					pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
 				}
+				new_idx = pos.x*C + pos.y;
 
-				else {
-					// selects te next position based on both rabbits and empy spaces
-					POSITION pos = new_position(gen, current_eco, i, j, R, C, RABBIT);
-					if (pos.x == i && pos.y == j) {
-						pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
+				// if the fox moves
+				if (current_idx != new_idx) {
+					if (current_eco[new_idx].type == RABBIT) {
+						new_eco[new_idx] = current_eco[current_idx];
+						new_eco[new_idx].gen_food = -1;
 					}
-					new_idx = pos.x*C + pos.y;
-
-					// if the fox moves
-					if (current_idx != new_idx) {
-						if (current_eco[new_idx].type == RABBIT) {
-							new_eco[new_idx] = current_eco[current_idx];
-							new_eco[new_idx].gen_food = -1;
+					else if (current_eco[new_idx].type == EMPTY) {
+						// Foxes only go into empty space if they don't starve
+						if (current_eco[current_idx].gen_food + 1 >= GEN_FOOD_FOXES) {
+							starved = 1;
 						}
-						else if (current_eco[new_idx].type == EMPTY) {
+						else {
 							new_eco[new_idx] = current_eco[current_idx];
 						}
-						else if (new_eco[new_idx].type == FOX) {
-							if (current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc) {
+					}
+					else if (new_eco[new_idx].type == FOX) {
+						if (current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc) {
+							new_eco[new_idx] = current_eco[current_idx];
+						}
+						else if (current_eco[current_idx].gen_proc == new_eco[new_idx].gen_proc) {
+							if (current_eco[current_idx].gen_food < new_eco[new_idx].gen_food) {
 								new_eco[new_idx] = current_eco[current_idx];
 							}
-							else if (current_eco[current_idx].gen_proc == new_eco[new_idx].gen_proc) {
-								if (current_eco[current_idx].gen_food < new_eco[new_idx].gen_food) {
-									new_eco[new_idx] = current_eco[current_idx];
-								}
-							}
-						}
-						// handles reproduction of the foxes
-						if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) {
-							new_eco[current_idx].type = FOX;
-							new_eco[current_idx].gen_proc = -1;
-							new_eco[current_idx].gen_food = -1;
-							new_eco[new_idx].gen_proc = -1;
 						}
 					}
+					// handles reproduction of the foxes -- Foxes that starved can't reproduce
+					if (starved == 0 && current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) {
+						new_eco[current_idx].type = FOX;
+						new_eco[current_idx].gen_proc = -1;
+						new_eco[current_idx].gen_food = -1;
+						new_eco[new_idx].gen_proc = -1;
+					}
+				}
 					
-					// the fox stays put
-					else {
-						new_eco[current_idx] = current_eco[current_idx];
-					}
+				// the fox stays put
+				else {
+					new_eco[current_idx] = current_eco[current_idx];
 				}
 			}
 		}
