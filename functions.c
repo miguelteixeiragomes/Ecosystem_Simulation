@@ -246,16 +246,19 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 				if (new_idx != current_idx) {
 
 					if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
+						// Handles reproduction of the Rabbits 
 						new_eco[current_idx].type = RABBIT;
 						new_eco[current_idx].gen_proc = -1;
 						current_eco[current_idx].gen_proc = -1;
 					}
 
 					if (new_eco[new_idx].type == EMPTY || (new_eco[new_idx].type == RABBIT && current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc)) {
+						// Solve conflicting Rabbits
 						new_eco[new_idx] = current_eco[current_idx];
 					}
 				}
 				else {
+					// Rabbit stays in the same place 
 					new_eco[new_idx] = current_eco[current_idx];
 				}
 			}
@@ -284,7 +287,7 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 
 			current_idx = i*C + j;
 			if (current_eco[current_idx].type == FOX) {
-				// selects te next position based on both rabbits and empy spaces
+				// Selects te next position based on both rabbits and empy spaces
 				POSITION pos = new_position(gen, current_eco, i, j, R, C, RABBIT);
 				if (pos.x == i && pos.y == j) {
 					pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
