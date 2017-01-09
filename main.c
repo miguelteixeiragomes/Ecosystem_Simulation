@@ -25,6 +25,9 @@ int main(int argc, char *argv[]){
 	// Lets get jiggy with it
 	int gen;
 	int aux = 0;
+	double start, stop;
+	start = omp_get_wtime();
+
 	for (gen = 0; gen < settings.N_GEN; gen++) {
 		//print_gen(array_1, settings.R, settings.C, gen, 0);
 
@@ -39,6 +42,8 @@ int main(int argc, char *argv[]){
 		transmit_type(array_2, array_1, settings.size, RABBIT);
 		fox_pusher(gen, array_2, array_1, settings.R, settings.C, settings.GEN_PROC_FOXES, settings.GEN_FOOD_FOXES);
 	}
+	stop = omp_get_wtime();
+	printf("elapsed time: %f\n", stop - start);
 	//print_gen(array_1, settings.R, settings.C, gen, 0);
 
 	save_result(settings, array_1);
