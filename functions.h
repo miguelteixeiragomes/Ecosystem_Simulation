@@ -14,8 +14,6 @@ typedef struct{
 	int type;
 	int gen_proc;
 	int gen_food;
-	int rep;
-	int kid_id;
 }ECO_ELEMENT;
 
 typedef struct{

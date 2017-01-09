@@ -285,7 +285,6 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 
 			current_idx = i*C + j;
 			if (current_eco[current_idx].type == FOX) {
-
 				// selects te next position based on both rabbits and empy spaces
 				POSITION pos = new_position(gen, current_eco, i, j, R, C, RABBIT);
 				if (pos.x == i && pos.y == j) {
@@ -293,48 +292,34 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 				}
 				new_idx = pos.x*C + pos.y;
 
-				// if the fox moves
 				if (current_idx != new_idx) {
-					if (new_eco[new_idx].type == RABBIT) {
-						new_eco[new_idx] = current_eco[current_idx];
-						new_eco[new_idx].gen_food = -1;
-					}
-					else if (new_eco[new_idx].type == EMPTY) {
-						// Foxes only go into empty space if they don't starve
-						if (current_eco[current_idx].gen_food + 1 >= GEN_FOOD_FOXES) {
-							continue;
-						}
-						else {
-							new_eco[new_idx] = current_eco[current_idx];
-						}
-					}
-					else if (new_eco[new_idx].type == FOX) {
-						if (current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc) {
-							new_eco[new_idx] = current_eco[current_idx];
-						}
-						else if (current_eco[current_idx].gen_proc == new_eco[new_idx].gen_proc) {
-							if (current_eco[current_idx].gen_food < new_eco[new_idx].gen_food) {
-								new_eco[new_idx] = current_eco[current_idx];
-							}
-							else {
-								continue;
-							}
-						}
-					}
-					// handles reproduction of the foxes
-					if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES) {
+					if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES && (current_eco[current_idx].gen_food + 1 < GEN_FOOD_FOXES || new_eco[new_idx].type == RABBIT)) {
+						// Handles reproduction of the Foxes if they don't starve or move into a Rabbit 
 						new_eco[current_idx].type = FOX;
 						new_eco[current_idx].gen_proc = -1;
 						new_eco[current_idx].gen_food = -1;
-						new_eco[new_idx].gen_proc = -1;
+						current_eco[current_idx].gen_proc = -1;
+					}
+
+					if (new_eco[new_idx].type == RABBIT) {
+						// Eat the Rabbit
+						new_eco[new_idx] = current_eco[current_idx];
+						new_eco[new_idx].gen_food = -1;
+					}
+					else if (new_eco[new_idx].type == EMPTY && current_eco[current_idx].gen_food + 1 < GEN_FOOD_FOXES) {
+						// Fox moves to an empty place if it doesn't starve
+						new_eco[new_idx] = current_eco[current_idx];
+					}
+					else if (new_eco[new_idx].type == FOX && current_eco[current_idx].gen_food + 1 < GEN_FOOD_FOXES
+						&& (current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc 
+							|| (current_eco[current_idx].gen_proc == new_eco[new_idx].gen_proc 
+								&& current_eco[current_idx].gen_food < new_eco[new_idx].gen_food))) {
+						// Solve conflicting Foxes
+						new_eco[new_idx] = current_eco[current_idx];
 					}
 				}
-					
-				// the fox stays put
-				else {
-					if (current_eco[current_idx].gen_food + 1 >= GEN_FOOD_FOXES) {
-						continue;
-					}
+				else if (current_eco[current_idx].gen_food + 1 < GEN_FOOD_FOXES) {
+					// Fox stays in the same place if it doesn't starve
 					new_eco[current_idx] = current_eco[current_idx];
 				}
 			}
