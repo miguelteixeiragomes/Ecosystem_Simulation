@@ -33,6 +33,7 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
       new_element.type = EMPTY;
 	  new_element.gen_food = 0;
 	  new_element.gen_proc = 0;
+	  new_element.mov_id = -1;
       eco_system[idx] = new_element;
     }
   }
@@ -45,6 +46,7 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
 
 	new_element.gen_food = 0;
 	new_element.gen_proc = 0;
+	new_element.mov_id = -1;
     if(strcmp(string,"ROCK") == 0){
       new_element.type = ROCK;
     }
@@ -231,40 +233,96 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 	}
 }
 
-void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS) {
+void rabbit_mov_id(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS) {
 	int i, j;
-	int current_idx, new_idx;
+	int idx;
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
-			current_idx = i*C + j;
-			if (current_eco[current_idx].type == RABBIT) {
+			idx = i*C + j;
+			if (current_eco[idx].type == RABBIT) {
 				// Calculate new possible position
 				POSITION pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
-				new_idx = pos.x*C + pos.y;
-				if (new_idx != current_idx) {
-					if (new_eco[new_idx].type == EMPTY || (new_eco[new_idx].type == RABBIT && current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc)) {
-						new_eco[new_idx] = current_eco[current_idx];
-					}
-					else {
-						continue;
-					}
-
-					// Reproduce
-					if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
-						new_eco[current_idx].type = RABBIT;
-						new_eco[current_idx].gen_proc = -1;
-						new_eco[new_idx].gen_proc = -1;
+				if (pos.x != i || pos.y != j) {
+					current_eco[idx].mov_id = pos.x*C + pos.y;
+					if (current_eco[idx].gen_proc == GEN_PROC_RABBITS) {
+						current_eco[idx].gen_proc = -1;
+						new_eco[idx].type = RABBIT;
+						new_eco[idx].gen_proc = -1;
 					}
 				}
 				else {
-					new_eco[new_idx] = current_eco[current_idx];
+					current_eco[idx].mov_id = -1;
 				}
 			}
 		}
 	}
+}
+
+void rabbit_push(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS) {
+	int neighbors[4] = { 0, 0, 0, 0 };
+	int i, j, k;
+	int idx, side_idx;
+	int chosen_rabbit_idx, gen_proc;
+	for (i = 0; i < R; i++) {
+		for (j = 0; j < C; j++) {
+			idx = i*C + j;
+			if (current_eco[idx].type == RABBIT && current_eco[idx].mov_id == -1) {
+				new_eco[idx] = current_eco[i];
+			}
+
+			if (i > 0)
+				neighbors[0] = (i - 1)*C + j;
+			else
+				neighbors[0] = -1;
+
+			if (j < C)
+				neighbors[1] = i*C + j + 1;
+			else
+				neighbors[1] = -1;
+
+			if (i < R)
+				neighbors[2] = (i + 1)*C + j;
+			else
+				neighbors[2] = -1;
+
+			if (j > 0)
+				neighbors[3] = i*C + j - 1;
+			else
+				neighbors[3] = -1;
+
+			chosen_rabbit_idx = -1;
+			gen_proc = -2;
+			for (k = 0; k < 4; k++) {
+				if (neighbors[k] != -1 && current_eco[neighbors[k]].mov_id == idx && current_eco[neighbors[k]].type == RABBIT) {
+					if (current_eco[neighbors[k]].gen_proc > gen_proc) {
+						chosen_rabbit_idx = neighbors[k];
+						gen_proc = current_eco[neighbors[k]].gen_proc;
+					}
+					else {
+						neighbors[k] = -2;
+					}
+				}
+			}
+
+			if (chosen_rabbit_idx != -1) {
+				new_eco[idx] = current_eco[chosen_rabbit_idx];
+			}
+
+			for (k = 0; k < 4; k++) {
+				if (neighbors[k] == -2) {
+					current_eco[neighbors[k]].type = EMPTY;
+					current_eco[neighbors[k]].gen_proc = 0;
+					current_eco[neighbors[k]].gen_food = 0;
+					current_eco[neighbors[k]].mov_id = -1;
+				}
+			}
+		}
+	}
+
 	for (i = 0; i < R*C; i++) {
 		if (new_eco[i].type == RABBIT) {
 			new_eco[i].gen_proc++;
+			new_eco[i].mov_id = -1;
 		}
 	}
 }

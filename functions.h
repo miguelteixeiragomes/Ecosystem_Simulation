@@ -14,8 +14,7 @@ typedef struct{
 	int type;
 	int gen_proc;
 	int gen_food;
-	int rep;
-	int kid_id;
+	int mov_id;
 }ECO_ELEMENT;
 
 typedef struct{
@@ -47,7 +46,9 @@ void save_result(ECO_SETTINGS settings, ECO_ELEMENT* eco);
 
 POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C, int type);
 
-void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS);
+void rabbit_mov_id(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS);
+
+void rabbit_push(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS);
 
 void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int type);
 
