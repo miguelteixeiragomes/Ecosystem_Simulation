@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
 	int gen;
 	int aux = 0;
 	for (gen = 0; gen < settings.N_GEN; gen++) {
-		print_gen(array_1, settings.R, settings.C, gen, 0);
+		//print_gen(array_1, settings.R, settings.C, gen, 0);
 
 		clear_fauna(array_2, settings.size);
 		rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
 		transmit_type(array_2, array_1, settings.size, RABBIT);
 		fox_pusher(gen, array_2, array_1, settings.R, settings.C, settings.GEN_PROC_FOXES, settings.GEN_FOOD_FOXES);
 	}
-	print_gen(array_1, settings.R, settings.C, gen, 0);
+	//print_gen(array_1, settings.R, settings.C, gen, 0);
 
 	save_result(settings, array_1);
 

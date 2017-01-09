@@ -12,6 +12,7 @@
 
 typedef struct{
 	int type;
+	int temp_type;
 	int gen_proc;
 	int gen_food;
 }ECO_ELEMENT;
