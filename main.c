@@ -23,6 +23,8 @@ int main(int argc, char *argv[]){
 	}
 	omp_set_num_threads(NUM_THREADS);
 
+	printf("Executing with %d threads\n", NUM_THREADS);
+
 	// Handle reading the input
 	FILE *file;
 	file = fopen(argv[1], "r");
@@ -36,20 +38,24 @@ int main(int argc, char *argv[]){
 
 	// Lets get jiggy with it
 	int gen;
-	int aux = 0;
 	double start, stop;
 	start = omp_get_wtime();
 
-	//#pragma omp parallel
+	#pragma omp parallel private(gen) shared(settings, array_1, array_2)
 	{
 		for (gen = 0; gen < settings.N_GEN; gen++) {
-			//print_gen(array_1, settings.R, settings.C, gen, 0);
+
+			#pragma omp master
+			print_gen(array_1, settings.R, settings.C, gen, 0);
 
 			clear_fauna(array_2, settings.size);
 			rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
-
 			transmit_type(array_1, array_2, settings.size, FOX);
+
+			//// Printing intermediate gen
+			//#pragma omp master
 			//printf("array_2 after moving rabbits\n");
+			//#pragma omp master
 			//print_gen(array_2, settings.R, settings.C, gen, 0);
 
 			clear_fauna(array_1, settings.size);
@@ -58,8 +64,8 @@ int main(int argc, char *argv[]){
 		}
 	}
 	stop = omp_get_wtime();
+	print_gen(array_1, settings.R, settings.C, settings.N_GEN, 0);
 	printf("elapsed time: %f\n", stop - start);
-	//print_gen(array_1, settings.R, settings.C, gen, 0);
 
 	save_result(settings, array_1);
 
