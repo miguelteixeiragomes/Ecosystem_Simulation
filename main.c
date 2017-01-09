@@ -24,6 +24,7 @@ int main(int argc, char *argv[]){
 
 	// Lets get jiggy with it
 	int gen;
+	int aux = 0;
 	for (gen = 0; gen < settings.N_GEN; gen++) {
 		print_gen(array_1, settings.R, settings.C, gen, 0);
 
@@ -32,7 +33,7 @@ int main(int argc, char *argv[]){
 
 		transmit_type(array_1, array_2, settings.size, FOX);
 		//printf("array_2 after moving rabbits\n");
-		//print_gen(array_2, settings.R, settings.C, gen, 1);
+		//print_gen(array_2, settings.R, settings.C, gen, 0);
 
 		clear_fauna(array_1, settings.size);
 		transmit_type(array_2, array_1, settings.size, RABBIT);
