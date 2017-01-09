@@ -1,2 +1,6 @@
 *.exe
 Ecosystem_Simulation.VC.VC.opendb
+x64/*
+Debug/*
+.vs/Ecosystem_Simulation/v14/.suo
+Ecosystem_Simulation.VC.db

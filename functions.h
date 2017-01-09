@@ -12,6 +12,7 @@
 
 typedef struct{
 	int type;
+	int temp_type;
 	int gen_proc;
 	int gen_food;
 }ECO_ELEMENT;
@@ -39,10 +40,16 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N);
 
 void clear_fauna(ECO_ELEMENT *new_eco, int size);
 
-void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen);
+void print_gen(ECO_ELEMENT *eco_system, int R, int C, int gen, int flag);
+
+void save_result(ECO_SETTINGS settings, ECO_ELEMENT* eco);
 
 POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int C, int type);
 
 void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_RABBITS);
+
+void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int type);
+
+void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, int C, int GEN_PROC_FOXES, int GEN_FOOD_FOXES);
 
 #endif
