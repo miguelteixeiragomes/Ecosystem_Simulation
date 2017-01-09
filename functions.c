@@ -70,6 +70,7 @@ ECO_ELEMENT* read_gen0(FILE *file, int R, int C, int N){
 }
 
 void clear_fauna(ECO_ELEMENT *new_eco, int size) {
+	#pragma omp parallel for
 	for (int i = 0; i < size; i++) {
 		if (new_eco[i].type != ROCK) {
 			new_eco[i].type = EMPTY;
@@ -279,6 +280,7 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 }
 
 void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int type) {
+	#pragma omp parallel for
 	for (int i = 0; i < size; i++) {
 		if (current_eco[i].type == type) {
 			new_eco[i] = current_eco[i];

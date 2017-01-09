@@ -10,6 +10,18 @@ int main(int argc, char *argv[]){
 		printf("No input file supplied\n");
 		return 1;
 	}
+	int NUM_THREADS;
+	if (argc == 3) {
+		NUM_THREADS = atoi(argv[2]);
+	}
+	else {
+		NUM_THREADS = omp_get_num_threads();
+	}
+	if (NUM_THREADS > omp_get_max_threads()) {
+		printf("Can't launch %d threads, using system limit: %d\n", NUM_THREADS, omp_get_max_threads());
+		NUM_THREADS = omp_get_max_threads();
+	}
+	omp_set_num_threads(NUM_THREADS);
 
 	// Handle reading the input
 	FILE *file;
@@ -28,19 +40,22 @@ int main(int argc, char *argv[]){
 	double start, stop;
 	start = omp_get_wtime();
 
-	for (gen = 0; gen < settings.N_GEN; gen++) {
-		//print_gen(array_1, settings.R, settings.C, gen, 0);
+	//#pragma omp parallel
+	{
+		for (gen = 0; gen < settings.N_GEN; gen++) {
+			//print_gen(array_1, settings.R, settings.C, gen, 0);
 
-		clear_fauna(array_2, settings.size);
-		rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
+			clear_fauna(array_2, settings.size);
+			rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
 
-		transmit_type(array_1, array_2, settings.size, FOX);
-		//printf("array_2 after moving rabbits\n");
-		//print_gen(array_2, settings.R, settings.C, gen, 0);
+			transmit_type(array_1, array_2, settings.size, FOX);
+			//printf("array_2 after moving rabbits\n");
+			//print_gen(array_2, settings.R, settings.C, gen, 0);
 
-		clear_fauna(array_1, settings.size);
-		transmit_type(array_2, array_1, settings.size, RABBIT);
-		fox_pusher(gen, array_2, array_1, settings.R, settings.C, settings.GEN_PROC_FOXES, settings.GEN_FOOD_FOXES);
+			clear_fauna(array_1, settings.size);
+			transmit_type(array_2, array_1, settings.size, RABBIT);
+			fox_pusher(gen, array_2, array_1, settings.R, settings.C, settings.GEN_PROC_FOXES, settings.GEN_FOOD_FOXES);
+		}
 	}
 	stop = omp_get_wtime();
 	printf("elapsed time: %f\n", stop - start);
