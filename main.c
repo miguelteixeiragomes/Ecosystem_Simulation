@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
 		NUM_THREADS = atoi(argv[2]);
 	}
 	else {
-		NUM_THREADS = omp_get_num_threads();
+		NUM_THREADS = omp_get_max_threads();
 	}
 	if (NUM_THREADS > omp_get_max_threads()) {
 		printf("Can't launch %d threads, using system limit: %d\n", NUM_THREADS, omp_get_max_threads());
@@ -45,9 +45,9 @@ int main(int argc, char *argv[]){
 	{
 		for (gen = 0; gen < settings.N_GEN; gen++) {
 
-			#pragma omp master
-			print_gen(array_1, settings.R, settings.C, gen, 0);
-
+			//#pragma omp master
+			//print_gen(array_1, settings.R, settings.C, gen, 0);
+			#pragma omp barrier
 			clear_fauna(array_2, settings.size);
 			rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
 			transmit_type(array_1, array_2, settings.size, FOX);
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 	stop = omp_get_wtime();
-	print_gen(array_1, settings.R, settings.C, settings.N_GEN, 0);
+	//print_gen(array_1, settings.R, settings.C, settings.N_GEN, 0);
 	printf("elapsed time: %f\n", stop - start);
 
 	save_result(settings, array_1);

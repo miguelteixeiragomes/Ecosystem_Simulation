@@ -227,7 +227,7 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 }
 
 void clear_fauna(ECO_ELEMENT *new_eco, int size) {
-#pragma omp for
+	#pragma omp for
 	for (int i = 0; i < size; i++) {
 		//printf("Thread %d - clear fauna idx %d\n", omp_get_thread_num(), i);
 		if (new_eco[i].type != ROCK) {
@@ -253,7 +253,7 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 	int i, j;
 	int current_idx, new_idx;
 
-	#pragma omp for private(i,j)
+	//#pragma omp for private(i,j)
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
 			current_idx = i*C + j;
@@ -299,7 +299,7 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 	int i, j;
 	int current_idx, new_idx;
 
-	#pragma omp for private(i,j)
+	//#pragma omp for private(i,j)
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
 			current_idx = i*C + j;
