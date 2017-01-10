@@ -269,7 +269,7 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 	int current_idx, new_idx;
 
 	//#pragma omp for private(i,j)
-	#pragma omp barrier
+	//#pragma omp barrier
 	#pragma omp for private(j) schedule(guided)
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
@@ -314,7 +314,7 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 			}
 		}
 	}
-	#pragma omp barrier
+	//#pragma omp barrier
 
 	#pragma omp for schedule(static)
 	for (i = 0; i < R*C; i++) {
@@ -329,7 +329,8 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 	int i, j;
 	int current_idx, new_idx;
 
-	#pragma omp barrier
+	//#pragma omp barrier
+	#pragma omp for private(j) schedule(guided)
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
 			current_idx = i*C + j;
@@ -343,14 +344,31 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 				new_idx = pos.x*C + pos.y;
 
 				if (current_idx != new_idx) {
-					if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES && (current_eco[current_idx].gen_food + 1 < GEN_FOOD_FOXES || new_eco[new_idx].temp_type == RABBIT)) {
+					if (current_eco[current_idx].gen_proc >= GEN_PROC_FOXES){ 
 						// Handles reproduction of the Foxes if they don't starve or move into a Rabbit 
-						new_eco[current_idx].type = FOX;
-						new_eco[current_idx].gen_proc = -1;
-						new_eco[current_idx].gen_food = -1;
-						current_eco[current_idx].gen_proc = -1;
+						if (current_eco[current_idx].gen_food + 1 < GEN_FOOD_FOXES) {
+							omp_set_lock(&lock_matrix[current_idx]);// LOCK current_idx
+							new_eco[current_idx].type = FOX;
+							new_eco[current_idx].gen_proc = -1;
+							new_eco[current_idx].gen_food = -1;
+							current_eco[current_idx].gen_proc = -1;
+							omp_unset_lock(&lock_matrix[current_idx]);// UNLOCK current_idx
+						}
+						else {
+							omp_set_lock(&lock_matrix[new_idx]);// LOCK new_idx
+							if (new_eco[new_idx].temp_type == RABBIT) {
+								omp_set_lock(&lock_matrix[current_idx]);// LOCK current_idx
+								new_eco[current_idx].type = FOX;
+								new_eco[current_idx].gen_proc = -1;
+								new_eco[current_idx].gen_food = -1;
+								current_eco[current_idx].gen_proc = -1;
+								omp_unset_lock(&lock_matrix[current_idx]);// UNLOCK current_idx
+							}
+							omp_unset_lock(&lock_matrix[new_idx]);// UNLOCK new_idx
+						}
 					}
 
+					omp_set_lock(&lock_matrix[new_idx]);// LOCK new_idx
 					if (new_eco[new_idx].type == RABBIT) {
 						// Eat the Rabbit
 						new_eco[new_idx] = current_eco[current_idx];
@@ -368,15 +386,18 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 						// Solve conflicting Foxes
 						new_eco[new_idx] = current_eco[current_idx];
 					}
+					omp_unset_lock(&lock_matrix[new_idx]);// UNLOCK new_idx
 				}
 				else if (current_eco[current_idx].gen_food + 1 < GEN_FOOD_FOXES) {
 					// Fox stays in the same place if it doesn't starve
+					omp_set_lock(&lock_matrix[current_idx]);//LOCK current_idx
 					new_eco[current_idx] = current_eco[current_idx];
+					omp_unset_lock(&lock_matrix[current_idx]);// UNLOCK current_idx
 				}
 			}
 		}
 	}
-	#pragma omp barrier
+	//#pragma omp barrier
 
 	#pragma omp for schedule(static)
 	for (i = 0; i < R*C; i++) {
