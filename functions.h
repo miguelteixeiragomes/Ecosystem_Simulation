@@ -33,6 +33,9 @@ typedef struct {
 	int y;
 }POSITION;
 
+void instanciate_locks(int size);
+
+void destroy_locks(int size);
 
 ECO_SETTINGS read_settings(FILE *file);
 

@@ -35,6 +35,8 @@ int main(int argc, char *argv[]){
 
 	ECO_ELEMENT *array_2 = malloc(settings.size*sizeof(ECO_ELEMENT));
 	memcpy(array_2, array_1, settings.size*sizeof(ECO_ELEMENT));
+	
+	instanciate_locks(settings.size);
 
 	// Lets get jiggy with it
 	int gen;
@@ -47,6 +49,7 @@ int main(int argc, char *argv[]){
 
 			//#pragma omp master
 			//print_gen(array_1, settings.R, settings.C, gen, 0);
+
 			#pragma omp barrier
 			clear_fauna(array_2, settings.size);
 			rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
@@ -70,6 +73,7 @@ int main(int argc, char *argv[]){
 	save_result(settings, array_1);
 
 	// Freeeeeeeeeeedom (Mel Gibson)
+	destroy_locks(settings.size);
 	free(array_1);
 	free(array_2);
 	return 0;

@@ -6,6 +6,21 @@
 
 const char types_in_char[4] = {'*', 'F', 'R', ' '};
 const char types_in_string[4][8] = {"ROCK", "FOX", "RABBIT", "EMPTY"};
+omp_lock_t *lock_matrix;
+
+void instanciate_locks(int size) {
+	lock_matrix = (omp_lock_t*)malloc(size * sizeof(omp_lock_t));
+	for (int i = 0; i < size; i++) {
+		omp_init_lock(&lock_matrix[i]);
+	}
+}
+
+void destroy_locks(int size) {
+	for (int i = 0; i < size; i++) {
+		omp_destroy_lock(&lock_matrix[i]);
+	}
+	free(lock_matrix);
+}
 
 ECO_SETTINGS read_settings(FILE *file){
 	ECO_SETTINGS settings;
@@ -227,7 +242,7 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 }
 
 void clear_fauna(ECO_ELEMENT *new_eco, int size) {
-	#pragma omp for
+	#pragma omp for schedule(static)
 	for (int i = 0; i < size; i++) {
 		//printf("Thread %d - clear fauna idx %d\n", omp_get_thread_num(), i);
 		if (new_eco[i].type != ROCK) {
@@ -240,7 +255,7 @@ void clear_fauna(ECO_ELEMENT *new_eco, int size) {
 }
 
 void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int type) {
-	#pragma omp for
+	#pragma omp for schedule(static)
 	for (int i = 0; i < size; i++) {
 		//printf("Thread %d - clear fauna idx %d\n", omp_get_thread_num(), i);
 		if (current_eco[i].type == type) {
@@ -254,6 +269,8 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 	int current_idx, new_idx;
 
 	//#pragma omp for private(i,j)
+	#pragma omp barrier
+	#pragma omp for private(j) schedule(guided)
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
 			current_idx = i*C + j;
@@ -267,26 +284,39 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 				if (new_idx != current_idx) {
 
 					if (current_eco[current_idx].gen_proc >= GEN_PROC_RABBITS) {
-						// Handles reproduction of the Rabbits 
+						// Handles reproduction of the Rabbits
+						omp_set_lock(&lock_matrix[current_idx]);
+
 						new_eco[current_idx].type = RABBIT;
 						new_eco[current_idx].gen_proc = -1;
+
+						omp_unset_lock(&lock_matrix[current_idx]);
 						current_eco[current_idx].gen_proc = -1;
 					}
 
+					omp_set_lock(&lock_matrix[new_idx]);
+					
 					if (new_eco[new_idx].type == EMPTY || (new_eco[new_idx].type == RABBIT && current_eco[current_idx].gen_proc > new_eco[new_idx].gen_proc)) {
 						// Solve conflicting Rabbits
 						new_eco[new_idx] = current_eco[current_idx];
 					}
+
+					omp_unset_lock(&lock_matrix[new_idx]);
 				}
 				else {
-					// Rabbit stays in the same place 
+					// Rabbit stays in the same place
+					omp_set_lock(&lock_matrix[new_idx]);
+
 					new_eco[new_idx] = current_eco[current_idx];
+
+					omp_unset_lock(&lock_matrix[new_idx]);
 				}
 			}
 		}
 	}
+	#pragma omp barrier
 
-	#pragma omp for private(i)
+	#pragma omp for schedule(static)
 	for (i = 0; i < R*C; i++) {
 		if (new_eco[i].type == RABBIT) {
 			new_eco[i].gen_proc++;
@@ -299,7 +329,7 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 	int i, j;
 	int current_idx, new_idx;
 
-	//#pragma omp for private(i,j)
+	#pragma omp barrier
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
 			current_idx = i*C + j;
@@ -346,8 +376,9 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 			}
 		}
 	}
+	#pragma omp barrier
 
-	#pragma omp for private(i)
+	#pragma omp for schedule(static)
 	for (i = 0; i < R*C; i++) {
 		if (new_eco[i].type == FOX) {
 			new_eco[i].gen_proc++;
