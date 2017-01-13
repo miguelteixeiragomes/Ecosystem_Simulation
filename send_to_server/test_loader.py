@@ -14,7 +14,7 @@ if __name__ == '__main__':
     RABBIT = 1
     FOX = 1
 
-    N_THREADS = [1, 2, 4, 8, 16, 32, 64]
+    N_THREADS = [1, 2, 4, 8, 16, 32]
     BASE_N = 200
 
     DIMS_LIST= [int(BASE_N*math.sqrt(N)) for N in N_THREADS]
@@ -33,10 +33,12 @@ if __name__ == '__main__':
                                                               ROCK,
                                                               RABBIT,
                                                               FOX))
-
+    print "testing"
     for file_name in INPUT_FILES:
         output_file = file_name + "_output"
         f = open(output_file, "w+")
         f.close()
+        print output_file
         for N in N_THREADS:
+            print N
             os.system("./ecosystem %s %d >> %s" % (file_name, N, output_file))
