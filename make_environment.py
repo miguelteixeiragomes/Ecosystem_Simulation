@@ -38,7 +38,7 @@ def write_environment(GEN_PROC_RABBITS, GEN_PROC_FOXES, GEN_FOOD_FOXES, N_GEN, R
 
 if __name__ == "__main__":
     if  len(sys.argv) != 10:
-    raise ValueError("Arguments for all arguments needed -> (GEN_PROC_RABBITS, GEN_PROC_FOXES, GEN_FOOD_FOXES, N_GEN, R, C, ROCK, RABBIT, FOX)")
+        raise ValueError("Arguments for all arguments needed -> (GEN_PROC_RABBITS, GEN_PROC_FOXES, GEN_FOOD_FOXES, N_GEN, R, C, ROCK, RABBIT, FOX)")
 
     GEN_PROC_RABBITS, GEN_PROC_FOXES, GEN_FOOD_FOXES, N_GEN, R, C, ROCK, RABBIT, FOX = [int(i) for i in sys.argv[1:]]
 

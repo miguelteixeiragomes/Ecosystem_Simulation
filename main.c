@@ -63,7 +63,7 @@ int main(int argc, char *argv[]){
 	stop = omp_get_wtime();
 
 	//print_gen(array_1, settings.R, settings.C, settings.N_GEN, 0);
-	printf("elapsed time: %f\n", stop - start);
+	printf("%d\t%f\n", NUM_THREADS, stop - start);
 
 	save_result(settings, array_1);
 
