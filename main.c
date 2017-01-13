@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
 	}
 	omp_set_num_threads(NUM_THREADS);
 
-	printf("Executing with %d threads\n", NUM_THREADS);
+	//printf("Executing with %d threads\n", NUM_THREADS);
 
 	// Handle reading the input
 	FILE *file;
