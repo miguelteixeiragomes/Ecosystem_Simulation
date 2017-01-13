@@ -11,7 +11,7 @@ def write_environment(GEN_PROC_RABBITS, GEN_PROC_FOXES, GEN_FOOD_FOXES, N_GEN, R
         for j in range(C):
             positions.append( (i, j) )
 
-    fich = open("input%sx%s.txt" % (R, C), 'w')
+    fich = open("input%sx%s" % (R, C), 'w')
     fich.write("%d %d %d %d %d %d %d\n" % (GEN_PROC_RABBITS, GEN_PROC_FOXES, GEN_FOOD_FOXES, N_GEN, R, C, ROCK + RABBIT + FOX))
 
 
@@ -33,7 +33,7 @@ def write_environment(GEN_PROC_RABBITS, GEN_PROC_FOXES, GEN_FOOD_FOXES, N_GEN, R
         del(positions[idx])
         fich.write("FOX %d %d\n" % position)
 
-    return "input%sx%s.txt" % (R, C)
+    return "input%sx%s" % (R, C)
 
 
 if __name__ == "__main__":

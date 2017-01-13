@@ -244,7 +244,6 @@ POSITION new_position(int gen, ECO_ELEMENT *ecosystem, int i, int j, int R, int 
 void clear_fauna(ECO_ELEMENT *new_eco, int size) {
 	#pragma omp for schedule(static)
 	for (int i = 0; i < size; i++) {
-		//printf("Thread %d - clear fauna idx %d\n", omp_get_thread_num(), i);
 		if (new_eco[i].type != ROCK) {
 			new_eco[i].type = EMPTY;
 			new_eco[i].temp_type = EMPTY;
@@ -257,7 +256,6 @@ void clear_fauna(ECO_ELEMENT *new_eco, int size) {
 void transmit_type(ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int size, int type) {
 	#pragma omp for schedule(static)
 	for (int i = 0; i < size; i++) {
-		//printf("Thread %d - clear fauna idx %d\n", omp_get_thread_num(), i);
 		if (current_eco[i].type == type) {
 			new_eco[i] = current_eco[i];
 		}
@@ -268,14 +266,11 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 	int i, j;
 	int current_idx, new_idx;
 
-	//#pragma omp for private(i,j)
-	//#pragma omp barrier
 	#pragma omp for private(j) schedule(guided)
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
 			current_idx = i*C + j;
 			if (current_eco[current_idx].type == RABBIT) {
-				//printf("Thread %d - got rabbit with idx %d\n", omp_get_thread_num(), current_idx);
 
 				// Calculate new possible position
 				POSITION pos = new_position(gen, current_eco, i, j, R, C, EMPTY);
@@ -314,7 +309,6 @@ void rabbit_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int 
 			}
 		}
 	}
-	//#pragma omp barrier
 
 	#pragma omp for schedule(static)
 	for (i = 0; i < R*C; i++) {
@@ -329,7 +323,6 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 	int i, j;
 	int current_idx, new_idx;
 
-	//#pragma omp barrier
 	#pragma omp for private(j) schedule(guided)
 	for (i = 0; i < R; i++) {
 		for (j = 0; j < C; j++) {
@@ -397,7 +390,6 @@ void fox_pusher(int gen, ECO_ELEMENT* current_eco, ECO_ELEMENT* new_eco, int R, 
 			}
 		}
 	}
-	//#pragma omp barrier
 
 	#pragma omp for schedule(static)
 	for (i = 0; i < R*C; i++) {

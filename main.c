@@ -53,15 +53,11 @@ int main(int argc, char *argv[]){
 			#pragma omp barrier
 			clear_fauna(array_2, settings.size);
 			rabbit_pusher(gen, array_1, array_2, settings.R, settings.C, settings.GEN_PROC_RABBITS);
-			#pragma omp flush(array_1)
-			#pragma omp flush(array_2)
 			transmit_type(array_1, array_2, settings.size, FOX);
 
 			clear_fauna(array_1, settings.size);
 			transmit_type(array_2, array_1, settings.size, RABBIT);
 			fox_pusher(gen, array_2, array_1, settings.R, settings.C, settings.GEN_PROC_FOXES, settings.GEN_FOOD_FOXES);
-			#pragma omp flush(array_1)
-			#pragma omp flush(array_2)
 		}
 	}
 	stop = omp_get_wtime();
